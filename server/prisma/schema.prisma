@@ -9,3 +9,24 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id Int @id @default(autoincrement())
+  username String @db.VarChar(30) @unique()
+  email String @db.VarChar(30)
+  hashPassword String @db.VarChar(30) @map("hash_password")
+  createdAt DateTime @db.DateTime() @map("created_at")
+  updatedAt DateTime @db.DateTime() @map("updated_at")
+
+  profile Profile?
+
+  @@map("users")
+}
+
+model Profile {
+  id Int @id @default(autoincrement())
+  userId Int @unique()
+  name String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  @@map("profiles")
+}

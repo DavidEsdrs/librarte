@@ -15,8 +15,8 @@ model User {
   username String @db.VarChar(30) @unique()
   email String @db.VarChar(30)
   hashPassword String @db.VarChar(30) @map("hash_password")
-  createdAt DateTime @db.DateTime() @map("created_at")
-  updatedAt DateTime @db.DateTime() @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
 
   profile Profile?
 

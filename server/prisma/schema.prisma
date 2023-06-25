@@ -19,6 +19,17 @@ model User {
   updatedAt DateTime @default(now()) @map("updated_at")
 
   profile Profile?
+  books Book[]
+  posts Post[]
+  likes Like[]
+  comments Comment[]
+  proposals Proposal[]
+
+  chatsAsProponent Chat[] @relation("ProponentUserChat")
+  chatsAsProposed Chat[] @relation("ProposedUserChat")
+
+  dealsAsProponent Deal[] @relation("ProponentUserDeal")
+  dealsAsProposed Deal[] @relation("ProposedUserDeal")
 
   @@map("users")
 }
@@ -29,4 +40,179 @@ model Profile {
   name String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   @@map("profiles")
+}
+
+model Book {
+  id Int @id @default(autoincrement())
+  title String
+  coverFilePath String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  images BookImage[]
+
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  tags Genre[]
+  posts Post[]
+  proposals Proposal[]
+
+  dealId Int
+  deals Deal[]
+
+  publisherId Int?
+  publisher Publisher? @relation(fields: [publisherId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@map("books")
+}
+
+model BookImage {
+  id Int @id @default(autoincrement())
+  imageFilePath String @db.VarChar(15)
+  createdAt DateTime @default(now())
+  bookId Int
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  @@map("books_images")
+}
+
+model BookInfo {
+  id Int @id @default(autoincrement())
+  isbn String @db.VarChar(20)
+  publicationYear Int @db.Year()
+  publicationDate DateTime @db.DateTime()
+  totalPages Int
+  summary String
+
+  authors Author[]
+
+  @@map("books_info")
+}
+
+model Publisher {
+  id Int @id @default(autoincrement())
+  name String
+  books Book[]
+  @@map("publishers")
+}
+
+model Genre {
+  id Int @id @default(autoincrement())
+  name String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  parentId Int?
+  parent Genre? @relation("GenresRelation", fields: [parentId], references: [id], onDelete: SetNull)
+  children Genre[] @relation("GenresRelation")
+
+  books Book[]
+
+  @@map("genres")
+}
+
+model Author {
+  id Int @id @default(autoincrement())
+
+  books BookInfo[]
+  @@map("authors")
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+
+  content String @db.MediumText()
+
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  likes Like[]
+  comments Comment[]
+
+  type PostType
+  
+  book Book[]
+  proposals Proposal[]
+
+  @@map("posts")
+}
+
+enum PostType {
+  NORMAL
+  WITH_BOOK
+}
+
+model Like {
+  id Int @id @default(autoincrement())
+  userId Int?
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  postId Int
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@map("likes")
+}
+
+model Comment {
+  id Int @id
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId Int
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  content String
+
+  @@map("comments")
+}
+
+model Proposal {
+  id Int @id @default(autoincrement())
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  proponentId Int
+  proponent User @relation(fields: [proponentId], references: [id], onDelete: Cascade)
+  postId Int?
+  post Post? @relation(fields: [postId], references: [id], onDelete: SetNull)
+
+  books Book[]
+
+  deal Deal?
+
+  @@map("proposals")
+}
+
+model Deal {
+  id Int @id @default(autoincrement())
+  state DealState
+  proposalId Int? @unique()
+  proposal Proposal? @relation(fields: [proposalId], references: [id], onDelete: SetNull)
+  books Book[]
+
+  proponentId Int
+  proponent User @relation("ProponentUserDeal", fields: [proponentId], references: [id], onDelete: Cascade)
+  proposedPartyId Int
+  proposedParty User @relation("ProposedUserDeal", fields: [proposedPartyId], references: [id], onDelete: Cascade)
+
+  @@map("deals")
+}
+
+enum DealState {
+  DEALING
+  PENDING
+  COMPLETED
+  CANCELED
+}
+
+model Chat {
+  id Int @id @default(autoincrement())
+  proponentId Int
+  proponent User @relation("ProponentUserChat", fields: [proponentId], references: [id], onDelete: Cascade)
+  proposedPartyId Int
+  proposedParty User @relation("ProposedUserChat", fields: [proposedPartyId], references: [id], onDelete: Cascade)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  @@map("chats")
 }

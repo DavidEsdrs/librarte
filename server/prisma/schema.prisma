@@ -79,6 +79,7 @@ model BookImage {
 model BookInfo {
   id Int @id @default(autoincrement())
   isbn String @db.VarChar(20)
+  title String @db.VarChar(100)
   publicationYear Int @db.Year()
   publicationDate DateTime @db.DateTime()
   totalPages Int

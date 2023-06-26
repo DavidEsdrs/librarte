@@ -83,7 +83,7 @@ model BookInfo {
   publicationYear Int @db.Year()
   publicationDate DateTime @db.DateTime()
   totalPages Int
-  summary String
+  summary String @db.MediumText()
 
   authors Author[]
 

@@ -54,15 +54,14 @@ model Book {
   userId Int
   user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  bookInfoId Int?
+  bookInfo BookInfo? @relation(fields: [bookInfoId], references: [id], onDelete: SetNull)
+
   tags Genre[]
   posts Post[]
   proposals Proposal[]
 
-  dealId Int
   deals Deal[]
-
-  publisherId Int?
-  publisher Publisher? @relation(fields: [publisherId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@map("books")
 }
@@ -84,7 +83,10 @@ model BookInfo {
   publicationDate DateTime @db.DateTime()
   totalPages Int
   summary String @db.MediumText()
+  publisherId Int?
+  publisher Publisher? @relation(fields: [publisherId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
+  books Book[]
   authors Author[]
 
   @@map("books_info")
@@ -93,7 +95,7 @@ model BookInfo {
 model Publisher {
   id Int @id @default(autoincrement())
   name String
-  books Book[]
+  books BookInfo[]
   @@map("publishers")
 }
 

@@ -31,6 +31,8 @@ model User {
   dealsAsProponent Deal[] @relation("ProponentUserDeal")
   dealsAsProposed Deal[] @relation("ProposedUserDeal")
 
+  roles Role[]
+
   @@map("users")
 }
 
@@ -40,6 +42,22 @@ model Profile {
   name String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   @@map("profiles")
+}
+
+model Role {
+  id Int @id @default(autoincrement())
+  type RoleType
+  
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("roles")
+}
+
+enum RoleType {
+  USER
+  ADMIN
+  GUEST
 }
 
 model Book {

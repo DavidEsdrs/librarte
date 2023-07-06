@@ -116,6 +116,9 @@ model Genre {
 
 model Author {
   id Int @id @default(autoincrement())
+  name String
+  bio String?
+  birthDate DateTime? @db.DateTime()
 
   books BookInfo[]
   @@map("authors")

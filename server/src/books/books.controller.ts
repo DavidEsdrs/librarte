@@ -1,24 +1,32 @@
-import { Body, Controller, Post, UseInterceptors, Request } from '@nestjs/common';
+import { Body, Controller, Post, UseInterceptors, Request, UploadedFiles, Get, Param, UseFilters, ParseFilePipe } from '@nestjs/common';
 import { CreateBookDTO } from './dto/books.dto'
 import { BooksService } from './books.service'
-import { FilesFieldsInterceptor } from 'src/common/interceptors/file-name.interceptor'
-import { imageFileFilter } from 'src/common/utils/utils'
+import { FilesFieldsInterceptor } from 'src/common/interceptors/files-fields.interceptor'
+import { UnprocessableEntityExceptionFilter } from "src/common/filters/unprocessable-entity-exception.filter";
+import { FileSystemService } from "src/file-system/file-system.service";
 
 @Controller('books')
 export class BooksController {
   constructor(private booksService: BooksService) {}
 
   @Post("/")
-  @UseInterceptors(
-    new FilesFieldsInterceptor([
-      { field: "cover", fileFilter: imageFileFilter, dest: './uploads/books/cover' },
-      { field: "featured_images", maxCount: 5, fileFilter: imageFileFilter, dest: './uploads/books/featuredImages' },
-    ])
-  )
+  @UseInterceptors(FilesFieldsInterceptor)
+  @UseFilters(UnprocessableEntityExceptionFilter)
   async createBook(
     @Body() createBookDto: CreateBookDTO,
-    @Request() request
+    @Request() request,
+    @UploadedFiles() files: {
+      cover: Express.Multer.File[];
+      featured_images: Express.Multer.File[];
+    }
   ) {
-    return this.booksService.createBook({...createBookDto, requester_id: request.sub.id})
+    return this.booksService.createBook({...createBookDto, requester_id: request.user.sub, cover: files.cover, featured_images: files.featured_images})
+  }
+
+  @Get("/:id")
+  async getBookById(
+    @Param("id") id: number
+  ) {
+    return this.booksService.getBookById(id)
   }
 }

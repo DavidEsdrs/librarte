@@ -18,32 +18,34 @@ export class BooksService {
       throw new UnprocessableEntityException("The provided files count isn't valid!")
     }
 
-    const book = await this.prisma.book.create({
-      data: {
-        title: dto.title,
-        coverFilePath: dto.cover[0].filename,
-        images: {
-          create: dto.featured_images.map(fi => ({ imageFilePath: fi.filename }))
-        },
-        user: {
-          connect: {
-            id: dto.requester_id
-          }
-        },
-        bookInfo: {
-          connect: {
-            id: dto.bookInfoId
+    try {
+      const book = await this.prisma.book.create({
+        data: {
+          title: dto.title,
+          coverFilePath: dto.cover[0].filename,
+          images: {
+            create: dto.featured_images.map(fi => ({ imageFilePath: fi.filename }))
+          },
+          user: {
+            connect: {
+              id: dto.requester_id
+            }
+          },
+          bookInfo: {
+            connect: {
+              id: dto.bookInfoId
+            }
           }
         }
-      }
-    })
-
-    /**
-     * TODO: remove the names of the files saved of the file system 'uploadedFilesName' array
-     * As it is needed just in case of errors
-     */
-
-    return book
+      })
+      /**
+       * TODO: remove the names of the files saved of the file system 'uploadedFilesName' array
+       * As it is needed just in case of errors
+       */
+      return book
+    } catch {
+      throw new UnprocessableEntityException("The provided files count isn't valid!")
+    }
   }
 
   async getBookById(id: number) {

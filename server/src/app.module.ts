@@ -10,9 +10,10 @@ import { AuthorsModule } from "./authors/authors.module"
 import { PostsModule } from './posts/posts.module';
 import { ProposalsModule } from "./proposals/proposals.module"
 import { DealsModule } from './deals/deals.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, BookInfoModule, BooksModule, AuthorsModule, PostsModule, ProposalsModule, DealsModule],
+  imports: [AuthModule, PrismaModule, BookInfoModule, BooksModule, AuthorsModule, PostsModule, ProposalsModule, DealsModule, CommentsModule],
   controllers: [AppController, AuthController],
   providers: [AppService],
 })

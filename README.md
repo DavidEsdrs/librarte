@@ -9,7 +9,7 @@ This application allow users to exchange books with each other. The project aims
 Frontend:
 - React
 - Tailwindcss
-- Vite
+- Next
 
 Backend:
 - Nestjs

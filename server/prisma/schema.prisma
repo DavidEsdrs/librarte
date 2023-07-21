@@ -179,7 +179,7 @@ model Like {
 }
 
 model Comment {
-  id Int @id
+  id Int @id @default(autoincrement())
   userId Int
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   postId Int

@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { useAuth } from "@/hooks/useAuth";
 
 const signUpFormSchema = z.object({
   name: z.string()
@@ -34,6 +35,8 @@ const signUpFormSchema = z.object({
 type SignUpFormData = z.infer<typeof signUpFormSchema>
 
 export default function SignUp() {
+  const { createAccount } = useAuth()
+
   const { 
     register,
     handleSubmit,
@@ -43,7 +46,12 @@ export default function SignUp() {
   })
   
   async function handleSignUp({ name, username, email, password }: SignUpFormData) {
-    
+    await createAccount({ 
+      name,
+      username,
+      email,
+      password 
+    })
   }
 
   return (

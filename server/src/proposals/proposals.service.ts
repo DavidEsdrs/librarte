@@ -1,5 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Book, Deal, Post, Proposal, User } from "@prisma/client";
+import { ChatsService } from "src/chats/chats.service";
 import { DealsService } from "src/deals/deals.service";
 import { PrismaService } from "src/prisma/prisma.service";
 
@@ -21,7 +22,8 @@ type ProposalWithOptions<T> = Proposal & ProposalWithBooks<T> & ProposalWithProp
 export class ProposalsService {
   constructor(
     private prisma: PrismaService,
-    private dealService: DealsService
+    private dealService: DealsService,
+    private chatService: ChatsService
   ) {}
 
   async createProposal({
@@ -134,28 +136,8 @@ export class ProposalsService {
     await Promise.all([
       this.prisma.proposal.update(updatePayload), 
       this.dealService.createDealPromise({ proposal, requester_id }), 
-      this.createChatPromise(proposal.proponentId, requester_id)
+      this.chatService.createChat(proposal.proponentId, requester_id)
     ])
-  }
-
-  async createChatPromise(proponentId: number, requester_id: number) {
-    const chat = await this.prisma.chat.create({
-      data: {
-        isActive: true,
-        proponent: {
-          connect: {
-            id: proponentId
-          }
-        },
-        proposedParty: {
-          connect: {
-            id: requester_id
-          }
-        },
-      }
-    })
-
-    return chat
   }
 
   private async getProposalById<T extends IncludeOptions>(id: number, include?: T): Promise<ProposalWithOptions<T> | null> {

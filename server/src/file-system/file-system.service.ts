@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common'
 import path from 'path'
 import fs from 'fs'
 import { promisify } from 'util'
@@ -11,7 +11,7 @@ export class FileSystemService {
 
   async deleteFile(filename: string, filepath: string[]): Promise<boolean> {
     try {
-      const pt = path.join("uploads", ...filepath, filename)
+      const pt = path.join('uploads', ...filepath, filename)
       await unlink(pt)
       return true
     } catch {

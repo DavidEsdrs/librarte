@@ -24,6 +24,7 @@ model User {
   likes Like[]
   comments Comment[]
   proposals Proposal[]
+  messages Message[]
 
   chatsAsProponent Chat[] @relation("ProponentUserChat")
   chatsAsProposed Chat[] @relation("ProposedUserChat")
@@ -240,5 +241,20 @@ model Chat {
   isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+
+  messages Message[]
   @@map("chats")
+}
+
+model Message {
+  id Int @id @default(autoincrement())
+  sentById Int?
+  sentBy User? @relation(fields: [sentById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  chatId Int
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  content String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("messages")
 }

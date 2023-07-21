@@ -8,7 +8,7 @@ export class DealsService {
     private prisma: PrismaService
   ) {}
 
-  async createDealPromise({ proposal, requester_id }: { proposal: Proposal & { books: Book[] }, requester_id: number }) {
+  async createDeal({ proposal, requester_id }: { proposal: Proposal & { books: Book[] }, requester_id: number }) {
     const deal = await this.prisma.deal.create({
       data: {
         proposal: {

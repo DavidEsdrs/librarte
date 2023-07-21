@@ -8,7 +8,7 @@ import { FileSystemService } from "src/file-system/file-system.service";
 export class UnprocessableEntityExceptionFilter implements ExceptionFilter {
   constructor(
     @Inject("FILE_SYSTEM")
-    private readonly fileSystem: FileSystemService
+    private fileSystem: FileSystemService
   ) {}
 
   async catch(exception: UnprocessableEntityException, host: ArgumentsHost) {
@@ -17,16 +17,22 @@ export class UnprocessableEntityExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
 
-    const filesNames = this.fileSystem.getUploadedFilesName()
+    let filesNames = this.fileSystem.getUploadedFilesName()
 
     for (const fileName of filesNames) {
       const [type] = fileName.split('-')
       switch(type) {
         case "cover":
           await this.fileSystem.deleteFile(fileName, ["books", "cover"])
+          const filteredArray = filesNames.filter(fn => fn !== fileName)
+          filesNames = filteredArray
+          this.fileSystem.setUploadedFilesName(filteredArray)
           break
         case "featured_images":
-          await this.fileSystem.deleteFile(fileName, ["books", "featured_images"])
+          await this.fileSystem.deleteFile(fileName, ["books", "featuredImages"])
+          const filteredArrayFi = filesNames.filter(fn => fn !== fileName)
+          filesNames = filteredArrayFi
+          this.fileSystem.setUploadedFilesName(filteredArrayFi)
           break
         default:
           throw new Error("Unkwnown file type")
@@ -39,6 +45,7 @@ export class UnprocessableEntityExceptionFilter implements ExceptionFilter {
         statusCode: status,
         timestamp: new Date().toISOString(),
         path: request.url,
+        message: exception.message
       });
   }
 }

@@ -19,6 +19,10 @@ export class FileSystemService {
     }
   }
 
+  setUploadedFilesName(arr: string[]) {
+    this.uploadedFilesName = arr
+  }
+
   getUploadedFilesName(): string[] {
     return this.uploadedFilesName
   }

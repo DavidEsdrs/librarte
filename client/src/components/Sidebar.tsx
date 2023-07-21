@@ -3,7 +3,7 @@ import styles from './sidebar.module.css'
 
 import logo from '@/assets/logo.svg'
 import { ChartLineUp, Binoculars, User, SignOut } from 'phosphor-react'
-import Link from 'next/link'
+import { SidebarNavigation } from './SidebarNavigation'
 
 export function Sidebar() {
   return (
@@ -13,26 +13,23 @@ export function Sidebar() {
 
         <nav className='mt-16'>
           <ul className='flex flex-col gap-8'>
-            <li>
-              <Link href='/' className='flex items-center gap-4 text-gray-100 font-semibold text-sm'>
-                <ChartLineUp size={24}/>
-                Início
-              </Link>
-            </li>
+            <SidebarNavigation
+              title='Início'
+              href='/'
+              icon={ChartLineUp}
+            />
 
-            <li>
-              <Link href="/explore" className='flex items-center gap-4 text-gray-400 font-semibold text-sm'>
-                <Binoculars size={24}/>
-                Explorar
-              </Link>
-            </li>
+            <SidebarNavigation
+              title='Explorar'
+              href='/explore'
+              icon={Binoculars}
+            />    
 
-            <li>
-              <Link href="/perfil" className='flex items-center gap-4 text-gray-400 font-semibold text-sm'>
-                <User size={24}/>
-                Perfil
-              </Link>
-            </li>
+            <SidebarNavigation
+              title='Perfil'
+              href='/perfil'
+              icon={User}
+            />
           </ul>
         </nav>
 

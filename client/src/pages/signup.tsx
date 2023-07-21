@@ -42,7 +42,7 @@ export default function SignUp() {
     resolver: zodResolver(signUpFormSchema)
   })
   
-  async function handleCreateAccount({ name, username, email, password }: SignUpFormData) {
+  async function handleSignUp({ name, username, email, password }: SignUpFormData) {
     
   }
 
@@ -60,7 +60,7 @@ export default function SignUp() {
             <h1 className="text-xl font-bold">Cadastre-se!</h1>
             <span className="text-gray-200 text-md">Faça seu cadastro e acesse nosso conteúdo</span>
 
-            <form className="w-[372px] space-y-4 mt-8" onSubmit={handleSubmit(handleCreateAccount)}>
+            <form className="w-[372px] space-y-4 mt-8" onSubmit={handleSubmit(handleSignUp)}>
               <FormInput 
                 name="name"
                 placeholder="Digite seu nome completo"

@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service'
 import { hash, verify } from 'argon2'
 import { JwtService } from '@nestjs/jwt'
 import ms from 'ms'
+import { User } from "@prisma/client"
 
 @Injectable()
 export class AuthService {
@@ -49,5 +50,19 @@ export class AuthService {
         }
       })
       return user;
+  }
+
+  async verifyUserByToken(token: string): Promise<User | undefined> {
+    const payload = this.jwtService.verify(token, {
+      secret: process.env.JWT_SECRET
+    })
+
+    const userId = payload.sub
+
+    if(userId) {
+      return this.prisma.user.findUnique({
+        where: { id: userId }
+      })
+    }
   }
 }

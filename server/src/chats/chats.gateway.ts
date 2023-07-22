@@ -35,6 +35,8 @@ export class ChatGateway implements OnGatewayConnection {
       return new WsException('')
     }
     client.join(`chat_${chatId}`)
+    const lastMessages = await this.chatsService.getMessages(chatId, { take: 10 })
+    client.to(`chat_${chatId}`).emit('last_messages', { lastMessages })
   }
 
   @SubscribeMessage('send_message')

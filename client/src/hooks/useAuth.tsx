@@ -1,14 +1,18 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import { UserDTO } from "@/dtos/UserDTO";
+import { api } from "@/services/api";
+import { useRouter } from "next/router";
+import { setCookie, parseCookies } from "nookies";
+import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from "react";
 
-interface NewUser {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
+interface UserLogin {
+  email: string,
+  password: string
 }
 
 interface AuthContextProps {
-  createAccount: (data: NewUser) => Promise<void>
+  user: UserDTO | null
+  isAuthenticated: boolean
+  signIn: (data: UserLogin) => Promise<void>
 }
 
 const AuthContext = createContext({} as AuthContextProps)
@@ -18,14 +22,36 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState(null) 
+  const router = useRouter()
+  const [user, setUser] = useState<UserDTO | null>(null) 
 
-  async function createAccount({ name, username, email, password }: NewUser) {
-    
+  const isAuthenticated = !!user
+
+  async function signIn({ email, password }: UserLogin) {
+    const { data } = await api.post('auth/login', {
+      email, 
+      password 
+    })
+
+    if (data.user) {
+      setUser(data.user)
+    }
+  }
+  
+  async function fetchUser () {
+    const { data } = await api.get('users')
+    if (data) {
+      setUser(data)
+      router.push('/')
+    }
   }
 
+  useEffect(() => {
+    fetchUser()
+  }, [])
+
   return (
-    <AuthContext.Provider value={{ createAccount }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, signIn }}>
       {children}
     </AuthContext.Provider>
   )

@@ -6,7 +6,10 @@ import { useForm } from "react-hook-form";
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { useAuth } from "@/hooks/useAuth";
+import { toast } from "react-toastify";
+import { AppError } from "@/utils/AppError";
+import { api } from "@/services/api";
+import { useRouter } from "next/router";
 
 const signUpFormSchema = z.object({
   name: z.string()
@@ -35,7 +38,7 @@ const signUpFormSchema = z.object({
 type SignUpFormData = z.infer<typeof signUpFormSchema>
 
 export default function SignUp() {
-  const { createAccount } = useAuth()
+  const router = useRouter()
 
   const { 
     register,
@@ -46,12 +49,23 @@ export default function SignUp() {
   })
   
   async function handleSignUp({ name, username, email, password }: SignUpFormData) {
-    await createAccount({ 
-      name,
-      username,
-      email,
-      password 
-    })
+    try {
+      await api.post('/signup', {
+        name, 
+        username, 
+        email, 
+        password 
+      })
+      
+      toast.success('Conta criada com sucesso!')
+      router.push('/signin')
+    } 
+    catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente'
+
+      toast.error(title)
+    }
   }
 
   return (

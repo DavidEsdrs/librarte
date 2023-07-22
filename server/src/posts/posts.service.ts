@@ -36,6 +36,9 @@ export class PostsService {
         content,
         type: books.length > 0 ? 'WITH_BOOK' : 'NORMAL',
         userId: requester_id,
+        book: {
+          connect: books.map(book => ({ id: book.id }))
+        }
       },
     })
 

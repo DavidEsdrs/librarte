@@ -13,7 +13,7 @@ export class AuthController {
   async login(@Body() authDto: LoginDTO, @Response() response) {
     const { accessToken, expiresIn, user } = await this.authService.login(authDto)
     const expires = new Date(Date.now() + expiresIn).toUTCString()
-    return response.set({ 'set-cookie': `accessToken=${accessToken}; Secure; HttpOnly; Expires=${expires}` }).json({ accessToken, user, expiresIn })
+    return response.set({ 'Set-Cookie': `accessToken=${accessToken}; Secure; HttpOnly; Expires=${expires}; Path=/; SameSite=Strict;` }).json({ accessToken, user, expiresIn })
   }
 
   @Public()

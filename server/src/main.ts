@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
 import { UnprocessableEntityException, ValidationPipe } from '@nestjs/common'
 import { HttpExceptionFilter } from './common/filters/http-exception.filter'
+import cookieParser from 'cookie-parser'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -9,6 +10,7 @@ async function bootstrap() {
     origin: '*',
     credentials: true,
   })
+  app.use(cookieParser())
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalPipes(
     new ValidationPipe({

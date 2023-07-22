@@ -44,4 +44,21 @@ export class PostsService {
 
     return post
   }
+
+  async getPosts({ take, skip, requester_id }: { take?: number, skip?: number, requester_id: number }) {
+    const posts = await this.prisma.post.findMany({
+      where: {
+        userId: {
+          not: requester_id
+        }
+      },
+      include: {
+        book: true
+      },
+      take,
+      skip
+    })
+
+    return posts
+  }
 }

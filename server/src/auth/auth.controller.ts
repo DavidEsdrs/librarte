@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Body, Controller, Post, Response } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDTO, SignUpDTO } from './dto/auth.dto'
 import { Public } from 'src/common/decorators/public.decorator'
@@ -10,8 +10,10 @@ export class AuthController {
 
   @Public()
   @Post('/login')
-  async login(@Body() authDto: LoginDTO) {
-    return this.authService.login(authDto)
+  async login(@Body() authDto: LoginDTO, @Response() response) {
+    const { accessToken, expiresIn, user } = await this.authService.login(authDto)
+    const expires = new Date(Date.now() + expiresIn).toUTCString()
+    return response.set({ 'set-cookie': `accessToken=${accessToken}; Secure; HttpOnly; Expires=${expires}` }).json({ accessToken, user, expiresIn })
   }
 
   @Public()

@@ -23,7 +23,7 @@ export class ChatGateway implements OnGatewayConnection {
     let chatId: string | number = client.handshake.query.chatId as string
     if (!chatId) {
       client.disconnect()
-      throw new WsException('Invalid chat id!')
+      return
     }
     chatId = Number(chatId)
     const user = await this.chatsService.getUserFromSocket(client) // TODO: Do the next lines in a guard (how to do that in a ws gateway?)
@@ -32,7 +32,7 @@ export class ChatGateway implements OnGatewayConnection {
       chat.proponentId === user.id || chat.proposedPartyId === user.id
     if (!userHasAccessToChat) {
       client.disconnect()
-      return new WsException('')
+      return
     }
     client.join(`chat_${chatId}`)
     const lastMessages = await this.chatsService.getMessages(chatId, { take: 10 })
@@ -41,9 +41,10 @@ export class ChatGateway implements OnGatewayConnection {
 
   @SubscribeMessage('send_message')
   async emitMessages(
-    @MessageBody() { chatId, content }: CreateMessageDTO,
+    @MessageBody() { content }: CreateMessageDTO,
     @ConnectedSocket() socket: Socket,
   ) {
+    let chatId = Number(socket.handshake.query.chatId as string)
     const user = await this.chatsService.getUserFromSocket(socket) // TODO: Do the next lines in a guard (how to do that in a ws gateway?)
     const chat = await this.chatsService.getChatById(chatId)
     const userHasAccessToChat =
@@ -55,7 +56,7 @@ export class ChatGateway implements OnGatewayConnection {
     const newMessage = await this.chatsService.createMessage({
       content,
       sentById: user.id,
-      chatId: 1,
+      chatId,
     })
 
     user.hashPassword = undefined // TODO: Avoid including "hashPassword" in the model when querying the user.

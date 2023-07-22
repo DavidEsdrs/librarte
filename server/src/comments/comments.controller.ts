@@ -12,6 +12,7 @@ import { CreateCommentDTO } from './dto/comments.dto'
 
 @Controller('/:postId/comments')
 export class CommentsController {
+  /* eslint-disable */
   constructor(private commentsService: CommentsService) {}
 
   @Post('/')

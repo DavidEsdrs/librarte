@@ -5,6 +5,7 @@ import {
   Body,
   Request,
   HttpCode,
+  Get,
 } from '@nestjs/common'
 import { UsersService } from './users.service'
 
@@ -21,5 +22,10 @@ export class UsersController {
     @Request() request,
   ) {
     this.service.addRole({ user_id: id, requester_id: request.sub.id, type })
+  }
+
+  @Get()
+  getUser(@Request() request) {
+    return this.service.getUserById(request.user.sub)
   }
 }

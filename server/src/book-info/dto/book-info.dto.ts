@@ -1,5 +1,11 @@
-import { IsDate, IsDateString, IsNumber, IsString, Length, Max } from "class-validator";
-import { IsBeforeNow } from "src/common/decorators/is-after-now.decorator";
+import {
+  IsDate,
+  IsDateString,
+  IsNumber,
+  IsString,
+  Length,
+  Max,
+} from 'class-validator'
 
 export class CreateBookInfoDTO {
   @IsString()
@@ -11,11 +17,10 @@ export class CreateBookInfoDTO {
   title: string
 
   @IsNumber()
-  @IsBeforeNow()
   publicationYear: number
 
   @IsDateString({
-    strict: true
+    strict: true,
   })
   publicationDate: Date
 

@@ -3,6 +3,8 @@ import { CaretRight, ChartLineUp } from 'phosphor-react'
 import book from '@/assets/book.svg'
 import { Sidebar } from "@/components/Sidebar";
 import Head from "next/head";
+import { GetServerSideProps } from "next";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Home() {
   return (

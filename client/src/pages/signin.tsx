@@ -7,6 +7,11 @@ import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormInput } from "@/components/FormInput";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "react-toastify";
+import { AppError } from "@/utils/AppError";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 const signInFormSchema = z.object({
   email: z.string()
@@ -21,6 +26,9 @@ const signInFormSchema = z.object({
 type SignUpFormData = z.infer<typeof signInFormSchema>
 
 export default function SignIn() {
+  const router = useRouter()
+  const { signIn } = useAuth()
+
   const { 
     register,
     handleSubmit,
@@ -29,8 +37,17 @@ export default function SignIn() {
     resolver: zodResolver(signInFormSchema)
   })
 
-  function handleSignIn({ email, password }: SignUpFormData) {
-    console.log({ email, password })
+  async function handleSignIn({ email, password }: SignUpFormData) {
+    try {
+      await signIn({ email, password })
+      router.push('/')
+    }
+    catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError ? error.message : 'Não foi possível fazer o login. Tente novamente'
+
+      toast.error(title)
+    }
   }
 
   return (
@@ -58,11 +75,10 @@ export default function SignIn() {
               <FormInput 
                 name="password"
                 placeholder="Digite sua senha"
-                type="password"
                 register={register}
               />
               {errors.password && <ErrorMessage message={errors.password.message as string}/>}
-
+              
               <button 
                 className="w-full p-4 bg-green-200 rounded-md disabled:opacity-70" 
                 type="submit" 
@@ -70,6 +86,10 @@ export default function SignIn() {
               >
                 Entrar
               </button>
+
+              <Link href='/signup' className="w-full text-center block">
+                Não tem conta? <span className="text-green-100">Cadastre-se</span>
+              </Link>
             </form>
 
           </div>

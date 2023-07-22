@@ -1,11 +1,4 @@
-import {
-  IsDate,
-  IsDateString,
-  IsNumber,
-  IsString,
-  Length,
-  Max,
-} from 'class-validator'
+import { IsDateString, IsNumber, IsString, Length } from 'class-validator'
 import { IsBeforeNow } from 'src/common/decorators/is-before-now.decorator'
 
 export class CreateBookInfoDTO {

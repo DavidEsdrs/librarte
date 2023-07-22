@@ -2,6 +2,7 @@ import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -10,9 +11,11 @@ import {
 import { Server, Socket } from 'socket.io'
 import { ChatsService } from './chats.service'
 import { CreateMessageDTO } from './dto/chats.dto'
+import { UseFilters } from '@nestjs/common'
+import { AllExceptionsFilter } from 'src/common/filters/ws-exception.filter'
 
 @WebSocketGateway({ cors: { origin: '*' } })
-export class ChatGateway implements OnGatewayConnection {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server
 
@@ -39,6 +42,11 @@ export class ChatGateway implements OnGatewayConnection {
     client.to(`chat_${chatId}`).emit('last_messages', { lastMessages })
   }
 
+  handleDisconnect(socket: Socket) {
+    socket.rooms.forEach(room => socket.leave(room))
+  }
+
+  @UseFilters(new AllExceptionsFilter())
   @SubscribeMessage('send_message')
   async emitMessages(
     @MessageBody() { content }: CreateMessageDTO,

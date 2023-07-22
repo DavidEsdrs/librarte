@@ -1,65 +1,85 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Book, Deal, Post, Proposal, User } from "@prisma/client";
-import { ChatsService } from "src/chats/chats.service";
-import { DealsService } from "src/deals/deals.service";
-import { PrismaService } from "src/prisma/prisma.service";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
+import { Book, Deal, Post, Proposal, User } from '@prisma/client'
+import { ChatsService } from 'src/chats/chats.service'
+import { DealsService } from 'src/deals/deals.service'
+import { PrismaService } from 'src/prisma/prisma.service'
 
 interface IncludeOptions {
-  books?: boolean;
-  deal?: boolean;
-  proponent?: boolean;
-  post?: boolean;
+  books?: boolean
+  deal?: boolean
+  proponent?: boolean
+  post?: boolean
 }
 
-type ProposalWithBooks<T> = T extends { books: true } ? { books: Book[] } : {};
-type ProposalWithProponent<T> = T extends { proponent: true } ? { proponent: User } : {};
-type ProposalWithDeal<T> = T extends { deal: true } ? { deal: Deal } : {};
-type ProposalWithPost<T> = T extends { post: true } ? { post: Post } : {};
+type ProposalWithBooks<T> = T extends { books: true }
+  ? { books: Book[] }
+  : unknown
+type ProposalWithProponent<T> = T extends { proponent: true }
+  ? { proponent: User }
+  : unknown
+type ProposalWithDeal<T> = T extends { deal: true } ? { deal: Deal } : unknown
+type ProposalWithPost<T> = T extends { post: true } ? { post: Post } : unknown
 
-type ProposalWithOptions<T> = Proposal & ProposalWithBooks<T> & ProposalWithProponent<T> & ProposalWithDeal<T> & ProposalWithPost<T>;
+type ProposalWithOptions<T> = Proposal &
+  ProposalWithBooks<T> &
+  ProposalWithProponent<T> &
+  ProposalWithDeal<T> &
+  ProposalWithPost<T>
 
 @Injectable()
 export class ProposalsService {
+  /* eslint-disable */
   constructor(
     private prisma: PrismaService,
     private dealService: DealsService,
-    private chatService: ChatsService
+    private chatService: ChatsService,
   ) {}
 
   async createProposal({
     post_id,
     proponent_id,
-    books_ids
-  }: { proponent_id: number, post_id: number, books_ids: number[] }) {
+    books_ids,
+  }: {
+    proponent_id: number
+    post_id: number
+    books_ids: number[]
+  }) {
     const post = await this.prisma.post.findUnique({
-      where: { id: post_id }
+      where: { id: post_id },
     })
 
-    if(!post) {
-      throw new NotFoundException("Post not found")
+    if (!post) {
+      throw new NotFoundException('Post not found')
     }
 
-    if(post.isOpen !== null && !post.isOpen) {
-      throw new BadRequestException("The post is no longer open!")
+    if (post.isOpen !== null && !post.isOpen) {
+      throw new BadRequestException('The post is no longer open!')
     }
 
-    const booksPromise = books_ids.map(async id => {
+    const booksPromise = books_ids.map(async (id) => {
       const book = await this.prisma.book.findFirst({
-        where: { id }
+        where: { id },
       })
       return book
     })
 
     const books = await Promise.all(booksPromise)
 
-    const areProponentsBooks = books.every(book => book && book.userId === proponent_id)
+    const areProponentsBooks = books.every(
+      (book) => book && book.userId === proponent_id,
+    )
 
-    if(!areProponentsBooks) {
+    if (!areProponentsBooks) {
       throw new ForbiddenException()
     }
 
-    if(books.some(book => book === null)) {
-      throw new BadRequestException("Some of the offered books is invalid!")
+    if (books.some((book) => book === null)) {
+      throw new BadRequestException('Some of the offered books is invalid!')
     }
 
     const proposal = await this.prisma.proposal.create({
@@ -67,85 +87,121 @@ export class ProposalsService {
         postId: post_id,
         proponentId: proponent_id,
         books: {
-          connect: books.map(book => ({ id: book.id }))
-        }
-      }
+          connect: books.map((book) => ({ id: book.id })),
+        },
+      },
     })
 
     return proposal
   }
 
-  async getProposal({ requester_id, proposalId }: { requester_id: number, proposalId: number }) {
+  async getProposal({
+    requester_id,
+    proposalId,
+  }: {
+    requester_id: number
+    proposalId: number
+  }) {
     const proposal = await this.getProposalById(proposalId, { post: true })
 
-    if(!proposal) {
-      throw new NotFoundException("No proposal has been found with the given id")
+    if (!proposal) {
+      throw new NotFoundException(
+        'No proposal has been found with the given id',
+      )
     }
 
-    const canAccessResource = requester_id === proposal.proponentId || requester_id === proposal.post.userId
+    const canAccessResource =
+      requester_id === proposal.proponentId ||
+      requester_id === proposal.post.userId
 
-    if(!canAccessResource) {
+    if (!canAccessResource) {
       throw new ForbiddenException()
     }
 
     return proposal
   }
 
-  async closeOrRefuseProposal({ requester_id, proposalId }: { requester_id: number, proposalId: number }) {
+  async closeOrRefuseProposal({
+    requester_id,
+    proposalId,
+  }: {
+    requester_id: number
+    proposalId: number
+  }) {
     const proposal = await this.getProposalById(proposalId, { post: true })
 
-    if(!proposal) {
-      throw new NotFoundException("Proposal not found!")
+    if (!proposal) {
+      throw new NotFoundException('Proposal not found!')
     }
 
-    const canManageProposal = proposal.proponentId === requester_id || proposal.post.userId === requester_id
+    const canManageProposal =
+      proposal.proponentId === requester_id ||
+      proposal.post.userId === requester_id
 
-    if(!canManageProposal) {
+    if (!canManageProposal) {
       throw new ForbiddenException()
     }
 
     await this.prisma.proposal.update({
       where: {
-        id: proposalId
+        id: proposalId,
       },
       data: {
-        isActive: false
-      }
+        isActive: false,
+      },
     })
   }
 
-  async acceptProposal({ requester_id, proposalId }: { requester_id: number, proposalId: number }) {
-    const proposal = await this.getProposalById(proposalId, { post: true, books: true })
+  async acceptProposal({
+    requester_id,
+    proposalId,
+  }: {
+    requester_id: number
+    proposalId: number
+  }) {
+    const proposal = await this.getProposalById(proposalId, {
+      post: true,
+      books: true,
+    })
 
-    if(!proposal) {
-      throw new NotFoundException("No proposal has been found with the given id")
+    if (!proposal) {
+      throw new NotFoundException(
+        'No proposal has been found with the given id',
+      )
     }
 
     const isPostCreator = requester_id === proposal.post.userId
 
-    if(!isPostCreator) {
+    if (!isPostCreator) {
       throw new ForbiddenException()
     }
 
-    if(proposal.isActive !== null && !proposal.isActive) {
-      throw new BadRequestException("The proposal was already refused!")
+    if (proposal.isActive !== null && !proposal.isActive) {
+      throw new BadRequestException('The proposal was already refused!')
     }
 
-    const updatePayload = { where: { id: proposalId }, data: { isActive: true } }
+    const updatePayload = {
+      where: { id: proposalId },
+      data: { isActive: true },
+    }
 
     await Promise.all([
-      this.prisma.proposal.update(updatePayload), 
-      this.dealService.createDeal({ proposal, requester_id }), 
-      this.chatService.createChat(proposal.proponentId, requester_id)
+      this.prisma.proposal.update(updatePayload),
+      this.dealService.createDeal({ proposal, requester_id }),
+      this.chatService.createChat(proposal.proponentId, requester_id),
     ])
   }
 
-  private async getProposalById<T extends IncludeOptions>(id: number, include?: T): Promise<ProposalWithOptions<T> | null> {
+  private async getProposalById<T extends IncludeOptions>(
+    id: number,
+    include?: T,
+  ): Promise<ProposalWithOptions<T> | null> {
     const proposal = await this.prisma.proposal.findUnique({
       where: { id },
-      include
+      include,
     })
 
+    /* eslint-disable */
     return proposal as ProposalWithOptions<T>
   }
 }

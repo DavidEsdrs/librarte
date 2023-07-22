@@ -1,10 +1,15 @@
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from "src/prisma/prisma.service";
-import { AuthorDTO, AuthorEditDTO } from "./dto/authors.dto";
-import { Author } from "@prisma/client";
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common'
+import { PrismaService } from 'src/prisma/prisma.service'
+import { AuthorDTO, AuthorEditDTO } from './dto/authors.dto'
+import { Author } from '@prisma/client'
 
 @Injectable()
 export class AuthorsService {
+  /* eslint-disable */
   constructor(private prisma: PrismaService) {}
 
   async createAuthor({
@@ -15,20 +20,20 @@ export class AuthorsService {
   }: AuthorDTO & { requester_id: number }): Promise<Author> {
     const requester = await this.prisma.user.findUnique({
       where: {
-        id: requester_id
+        id: requester_id,
       },
       include: {
-        roles: true
-      }
+        roles: true,
+      },
     })
 
-    if(!requester) {
+    if (!requester) {
       throw new UnauthorizedException()
     }
 
-    const canPerformAction = requester.roles.some(r => r.type === "ADMIN")
+    const canPerformAction = requester.roles.some((r) => r.type === 'ADMIN')
 
-    if(!canPerformAction) {
+    if (!canPerformAction) {
       throw new ForbiddenException()
     }
 
@@ -36,8 +41,8 @@ export class AuthorsService {
       data: {
         name,
         bio,
-        birthDate
-      }
+        birthDate,
+      },
     })
 
     return author
@@ -46,8 +51,8 @@ export class AuthorsService {
   async findAuthorById(id: number): Promise<Author> {
     return this.prisma.author.findFirst({
       where: {
-        id
-      }
+        id,
+      },
     })
   }
 
@@ -56,66 +61,69 @@ export class AuthorsService {
     requester_id,
     bio,
     birthDate,
-    name
-  }: AuthorEditDTO & { requester_id: number, id: number }): Promise<void> {
+    name,
+  }: AuthorEditDTO & { requester_id: number; id: number }): Promise<void> {
     const requester = await this.prisma.user.findUnique({
       where: {
-        id: requester_id
+        id: requester_id,
       },
       include: {
-        roles: true
-      }
+        roles: true,
+      },
     })
 
-    if(!requester) {
+    if (!requester) {
       throw new UnauthorizedException()
     }
 
-    const canPerformAction = requester.roles.some(r => r.type === "ADMIN")
+    const canPerformAction = requester.roles.some((r) => r.type === 'ADMIN')
 
-    if(!canPerformAction) {
+    if (!canPerformAction) {
       throw new ForbiddenException()
     }
 
     await this.prisma.author.update({
       where: {
-        id
+        id,
       },
       data: {
         bio,
         birthDate,
-        name
-      }
+        name,
+      },
     })
   }
 
   async deleteAuthor({
     requester_id,
-    author_id
-  }: { requester_id: number, author_id: number }) {
+    author_id,
+  }: {
+    requester_id: number
+    author_id: number
+  }) {
     const requester = await this.prisma.user.findUnique({
       where: {
-        id: requester_id
+        id: requester_id,
       },
       include: {
-        roles: true
-      }
+        roles: true,
+      },
     })
 
-    if(!requester) {
+    if (!requester) {
       throw new UnauthorizedException()
     }
 
-    const canPerformAction = requester.roles.some(r => r.type === "ADMIN")
+    const canPerformAction = requester.roles.some((r) => r.type === 'ADMIN')
 
-    if(!canPerformAction) {
+    if (!canPerformAction) {
       throw new ForbiddenException()
     }
 
     await this.prisma.author.delete({
       where: {
-        id: author_id
-      }
+        id: author_id,
+      },
     })
   }
 }

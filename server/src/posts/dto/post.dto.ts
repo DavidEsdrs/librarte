@@ -1,4 +1,4 @@
-import { ArrayMaxSize, IsArray, IsString } from "class-validator"
+import { ArrayMaxSize, IsArray, IsString } from 'class-validator'
 
 export class PostDTO {
   @IsString()

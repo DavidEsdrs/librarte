@@ -5,6 +5,7 @@ import { Public } from 'src/common/decorators/public.decorator'
 
 @Controller('auth')
 export class AuthController {
+  /* eslint-disable */
   constructor(private authService: AuthService) {}
 
   @Public()

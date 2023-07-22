@@ -1,15 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { WsException } from "@nestjs/websockets";
-import { Socket } from "socket.io";
-import { AuthService } from "src/auth/auth.service";
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreateMessageDTO } from "./dto/chats.dto";
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { WsException } from '@nestjs/websockets'
+import { Socket } from 'socket.io'
+import { AuthService } from 'src/auth/auth.service'
+import { PrismaService } from 'src/prisma/prisma.service'
+import { CreateMessageDTO } from './dto/chats.dto'
 
 @Injectable()
 export class ChatsService {
+  /* eslint-disable */
   constructor(
     private prisma: PrismaService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {}
 
   async createChat(proponentId: number, requester_id: number) {
@@ -18,15 +19,15 @@ export class ChatsService {
         isActive: true,
         proponent: {
           connect: {
-            id: proponentId
-          }
+            id: proponentId,
+          },
         },
         proposedParty: {
           connect: {
-            id: requester_id
-          }
+            id: requester_id,
+          },
         },
-      }
+      },
     })
 
     return chat
@@ -37,23 +38,23 @@ export class ChatsService {
       data: {
         content,
         chatId,
-        sentById
-      }
+        sentById,
+      },
     })
     return newMessage
   }
 
   async getUserFromSocket(socket: Socket) {
-    let auth_token = socket.handshake.query.authorization as string
+    const auth_token = socket.handshake.query.authorization as string
 
-    if(!auth_token) {
-      throw new WsException("Invalid auth!")
+    if (!auth_token) {
+      throw new WsException('Invalid auth!')
     }
 
     const user = await this.authService.verifyUserByToken(auth_token)
 
-    if(!user) {
-      throw new WsException("Invalid credentials!")
+    if (!user) {
+      throw new WsException('Invalid credentials!')
     }
 
     return user
@@ -61,8 +62,8 @@ export class ChatsService {
 
   async getChatById(id: number) {
     const chat = await this.prisma.chat.findUnique({ where: { id } })
-    if(!chat) {
-      throw new NotFoundException("The given chat id was not found!")
+    if (!chat) {
+      throw new NotFoundException('The given chat id was not found!')
     }
     return chat
   }

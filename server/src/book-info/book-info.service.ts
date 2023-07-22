@@ -1,12 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from "src/prisma/prisma.service";
-import { CreateBookInfoDTO } from "./dto/book-info.dto";
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { PrismaService } from 'src/prisma/prisma.service'
+import { CreateBookInfoDTO } from './dto/book-info.dto'
 
 @Injectable()
 export class BookInfoService {
+  /* eslint-disable */
   constructor(private prisma: PrismaService) {}
 
-  async createBookInfo({ isbn, publicationDate, publicationYear, summary, totalPages, title }: CreateBookInfoDTO) {
+  async createBookInfo({
+    isbn,
+    publicationDate,
+    publicationYear,
+    summary,
+    totalPages,
+    title,
+  }: CreateBookInfoDTO) {
     const bookInfo = await this.prisma.bookInfo.create({
       data: {
         isbn,
@@ -14,8 +22,8 @@ export class BookInfoService {
         publicationYear,
         summary,
         totalPages,
-        title
-      }
+        title,
+      },
     })
     return bookInfo
   }
@@ -23,11 +31,11 @@ export class BookInfoService {
   async getBookInfoById(id: number) {
     const bookInfo = await this.prisma.bookInfo.findFirst({
       where: {
-        id
-      }
+        id,
+      },
     })
-    if(!bookInfo) {
-      throw new NotFoundException("There is no book with the given id!")
+    if (!bookInfo) {
+      throw new NotFoundException('There is no book with the given id!')
     }
     return bookInfo
   }
@@ -35,11 +43,11 @@ export class BookInfoService {
   async getBookInfoByIsbn(isbn: string) {
     const bookInfo = await this.prisma.bookInfo.findFirst({
       where: {
-        isbn
-      }
+        isbn,
+      },
     })
-    if(!bookInfo) {
-      throw new NotFoundException("There is no book with the given isbn!")
+    if (!bookInfo) {
+      throw new NotFoundException('There is no book with the given isbn!')
     }
     return bookInfo
   }

@@ -14,7 +14,6 @@ import { CreateBookDTO } from './dto/books.dto'
 import { BooksService } from './books.service'
 import { FilesFieldsInterceptor } from 'src/common/interceptors/files-fields.interceptor'
 import { UnprocessableEntityExceptionFilter } from 'src/common/filters/unprocessable-entity-exception.filter'
-import { FileSystemService } from 'src/file-system/file-system.service'
 import { CreateBookPipe } from './pipes/createBook.pipe'
 
 @Controller('books')

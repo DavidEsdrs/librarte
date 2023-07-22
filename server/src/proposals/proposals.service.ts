@@ -135,7 +135,7 @@ export class ProposalsService {
 
     await Promise.all([
       this.prisma.proposal.update(updatePayload), 
-      this.dealService.createDealPromise({ proposal, requester_id }), 
+      this.dealService.createDeal({ proposal, requester_id }), 
       this.chatService.createChat(proposal.proponentId, requester_id)
     ])
   }

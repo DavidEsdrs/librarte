@@ -36,9 +36,29 @@ export class PostsService {
         content,
         type: books.length > 0 ? 'WITH_BOOK' : 'NORMAL',
         userId: requester_id,
+        book: {
+          connect: books.map(book => ({ id: book.id }))
+        }
       },
     })
 
     return post
+  }
+
+  async getPosts({ take, skip, requester_id }: { take?: number, skip?: number, requester_id: number }) {
+    const posts = await this.prisma.post.findMany({
+      where: {
+        userId: {
+          not: requester_id
+        }
+      },
+      include: {
+        book: true
+      },
+      take,
+      skip
+    })
+
+    return posts
   }
 }

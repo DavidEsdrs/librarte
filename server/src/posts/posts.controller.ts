@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Request } from '@nestjs/common'
+import {
+  ParseIntPipe,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Request,
+} from '@nestjs/common'
 import { PostsService } from './posts.service'
 import { PostDTO } from './dto/post.dto'
 
@@ -13,5 +21,10 @@ export class PostsController {
       ...bookDto,
       requester_id: request.user.sub,
     })
+  }
+
+  @Get('/')
+  async getPost(@Query('take', new ParseIntPipe()) take: number, @Query('skip', new ParseIntPipe()) skip: number, @Request() request) {
+    return this.postsService.getPosts({ take, skip, requester_id: request.user.sub })
   }
 }

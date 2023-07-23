@@ -51,4 +51,25 @@ export class BookInfoService {
     }
     return bookInfo
   }
+
+  async getBooks({ take }: { take?: number }) {
+    const books = await this.prisma.bookInfo.findMany({
+      take
+    })
+    return books
+  }
+
+  async getBooksByGenre({ genre, take }: { take: number, genre: string }) {
+    const books = await this.prisma.bookInfo.findMany({
+      where: {
+        genres: {
+          some: {
+            name: genre
+          }
+        }
+      },
+      take
+    })
+    return books
+  }
 }

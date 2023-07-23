@@ -76,7 +76,6 @@ model Book {
   bookInfoId Int?
   bookInfo BookInfo? @relation(fields: [bookInfoId], references: [id], onDelete: SetNull)
 
-  tags Genre[]
   posts Post[]
   proposals Proposal[]
 
@@ -107,6 +106,7 @@ model BookInfo {
 
   books Book[]
   authors Author[]
+  genres Genre[]
 
   @@map("books_info")
 }
@@ -128,7 +128,7 @@ model Genre {
   parent Genre? @relation("GenresRelation", fields: [parentId], references: [id], onDelete: SetNull)
   children Genre[] @relation("GenresRelation")
 
-  books Book[]
+  books BookInfo[]
 
   @@map("genres")
 }

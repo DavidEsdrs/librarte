@@ -24,7 +24,7 @@ export class PostsController {
   }
 
   @Get('/')
-  async getPost(@Query('take', new ParseIntPipe()) take: number, @Query('skip', new ParseIntPipe()) skip: number, @Request() request) {
-    return this.postsService.getPosts({ take, skip, requester_id: request.user.sub })
+  async getPost(@Query('take') take: number, @Query('skip') skip: number, @Request() request) {
+    return this.postsService.getPosts({ take: take || 10, skip: skip || 0, requester_id: request.user.sub })
   }
 }

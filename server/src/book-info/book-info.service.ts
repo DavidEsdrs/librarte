@@ -54,6 +54,9 @@ export class BookInfoService {
 
   async getBooks({ take, skip }: { take?: number, skip?: number }) {
     const books = await this.prisma.bookInfo.findMany({
+      include: {
+        genres: true
+      },
       take,
       skip
     })

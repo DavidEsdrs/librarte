@@ -28,4 +28,12 @@ export class BookInfoController {
   async getBooks(@Query('take') take: number) {
     return this.booksInfoService.getBooks({ take })
   }
+
+  @Get('/')
+  async getBooksByGenre(
+    @Query('take') take: number,
+    @Query('genre') genre: string,
+  ) {
+    return
+  }
 }

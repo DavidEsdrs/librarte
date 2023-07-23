@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { AppError } from "@/utils/AppError";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useEffect } from "react";
 
 const signInFormSchema = z.object({
   email: z.string()
@@ -27,7 +28,7 @@ type SignUpFormData = z.infer<typeof signInFormSchema>
 
 export default function SignIn() {
   const router = useRouter()
-  const { signIn } = useAuth()
+  const { signIn, isAuthenticated } = useAuth()
 
   const { 
     register,
@@ -49,6 +50,12 @@ export default function SignIn() {
       toast.error(title)
     }
   }
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/')
+    }
+  } , [isAuthenticated])
 
   return (
     <>

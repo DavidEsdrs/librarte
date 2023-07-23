@@ -4,8 +4,18 @@ import { Binoculars, MagnifyingGlass } from "phosphor-react";
 import book from '@/assets/book.svg'
 import { Sidebar } from "@/components/Sidebar";
 import Head from "next/head";
+import { BookCard } from "@/components/BookCard";
+import { useState } from "react";
+
+const categories = ["Todos", "Computação", "Educação", "Fantasia", 'Ficção científica', 'Horror']
 
 export default function Explore() {
+  const [activeCategory, setActiveCategory] = useState('Todos')
+
+  function handleSetActiveCategory(categoryTitle: string) {
+    setActiveCategory(categoryTitle)
+  }
+
   return (
     <>
       <Head>
@@ -31,21 +41,22 @@ export default function Explore() {
           </header>
 
           <div className="flex flex-start my-12 gap-4">
-            <Category title="Computação"/>
-            <Category title="Educação"/>
-            <Category title="Fantasia"/>
-            <Category title="Ficção científica"/>
-            <Category title="Horror"/>
+            {categories.map(category => (
+              <Category 
+                key={category} 
+                title={category} 
+                isActive={category === activeCategory} 
+                onClick={() => handleSetActiveCategory(category)}
+              />
+            ))}
           </div>
 
-          <div className="grid grid-cols-4 gap-8">
-            <PostCard.Root>
-              <PostCard.Content 
-                image={book}
-                title="Entendendo Algoritmos"
-                author="Aditya Bhargava"
-              />
-            </PostCard.Root>
+          <div className="grid lg:grid-cols-2 2xl:grid-cols-4 gap-8">
+            <BookCard />
+            <BookCard />
+            <BookCard />
+            <BookCard />
+            <BookCard />
           </div>
         </div>
       </main>

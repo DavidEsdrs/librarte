@@ -30,23 +30,31 @@ export default function Perfil() {
               </form>
 
               <div className="space-y-8 mt-16 w-full">
-                <PostCard.Root>
-                  <PostCard.Content 
-                    image={book}
-                    title="Entendendo Algoritmos"
-                    author="Aditya Bhargava"
-                    description="Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
-                  />
-                </PostCard.Root>
+                <PostCard 
+                  creator={{
+                    name: "Matheus Oliveira",
+                    createdAt: "Hoje",
+                  }}
+                  bookDescription={{
+                    image: book,
+                    title:"Entendendo Algoritmos",
+                    author:"Aditya Bhargava",
+                    description: "Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
+                  }}
+                />
 
-                <PostCard.Root>
-                  <PostCard.Content 
-                    image={book}
-                    title="Entendendo Algoritmos"
-                    author="Aditya Bhargava"
-                    description="Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
-                  />
-                </PostCard.Root>
+                <PostCard 
+                  creator={{
+                    name: "Matheus Oliveira",
+                    createdAt: "Hoje",
+                  }}
+                  bookDescription={{
+                    image: book,
+                    title:"Entendendo Algoritmos",
+                    author:"Aditya Bhargava",
+                    description: "Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
+                  }}
+                />
               </div>
             </section>
 

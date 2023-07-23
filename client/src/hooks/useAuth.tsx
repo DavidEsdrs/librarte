@@ -42,7 +42,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const { data } = await api.get('users')
     if (data) {
       setUser(data)
-      router.push('/')
     }
   }
 

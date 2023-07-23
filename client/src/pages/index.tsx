@@ -1,10 +1,11 @@
 import { PostCard } from "@/components/PostCard";
-import { CaretRight, ChartLineUp } from 'phosphor-react'
+import { CaretRight, ChartLineUp, Plus } from 'phosphor-react'
 import book from '@/assets/book.svg'
 import { Sidebar } from "@/components/Sidebar";
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import { useAuth } from "@/hooks/useAuth";
+import * as Dialog  from "@radix-ui/react-dialog";
+import { NewPostModal } from "@/components/NewPostModal"
 
 export default function Home() {
   return (
@@ -20,21 +21,35 @@ export default function Home() {
             <ChartLineUp size={32} className="text-green-100"/>
             Início
           </h1>
-
+          
           <div className="flex mt-12">
             <section className="flex-1 space-y-16 flex flex-col items-center xl:items-start">
               <article className="space-y-4">
-                <h2>Avaliações mais recentes</h2>
+                <div className="flex justify-between">
+                  <h2>Timeline</h2>
+                  <Dialog.Root>
+                    <Dialog.Trigger asChild>
+                      <button className="flex gap-2 text-green-100 hover:opacity-70">
+                        Adicionar post
+                        <Plus size={24}/>
+                      </button>
+                    </Dialog.Trigger>
 
-                <PostCard.Root>
-                  <PostCard.Header />
-                  <PostCard.Content 
-                    image={book}
-                    title="Entendendo Algoritmos"
-                    author="Aditya Bhargava"
-                    description="Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
-                  />
-                </PostCard.Root>
+                    <NewPostModal />
+                  </Dialog.Root>
+                </div>
+                <PostCard 
+                  creator={{
+                    name: "Matheus Oliveira",
+                    createdAt: "Hoje",
+                  }}
+                  bookDescription={{
+                    image: book,
+                    title:"Entendendo Algoritmos",
+                    author:"Aditya Bhargava",
+                    description: "Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
+                  }}
+                />
               </article>
             </section>
 
@@ -48,13 +63,7 @@ export default function Home() {
               </div>
               
               <div className="space-y-3">
-                <PostCard.Root>
-                  <PostCard.Content 
-                    image={book}
-                    title="Entendendo Algoritmos"
-                    author="Aditya Bhargava"
-                  />
-                </PostCard.Root>
+                Livros populares aqui
               </div>
             </section>
           </div>

@@ -51,4 +51,11 @@ export class BookInfoService {
     }
     return bookInfo
   }
+
+  async getBooks({ take }: { take?: number }) {
+    const books = await this.prisma.bookInfo.findMany({
+      take
+    })
+    return books
+  }
 }

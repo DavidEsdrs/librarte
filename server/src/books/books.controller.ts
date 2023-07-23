@@ -60,14 +60,5 @@ export class BooksController {
       'Content-Disposition': `inline; filename="${book.coverFilePath}"`,
     })
     return new StreamableFile(stream)
-    // Readable.toWeb(stream).pipeTo(new WritableStream({
-    //   async write(chunk) {
-    //     console.log(count++)
-    //     response.write(chunk)
-    //   },
-    //   close() {
-    //     response.end()
-    //   }
-    // }))
   }
 }

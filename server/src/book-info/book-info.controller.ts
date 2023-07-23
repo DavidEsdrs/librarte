@@ -34,6 +34,6 @@ export class BookInfoController {
     @Query('take') take: number,
     @Query('genre') genre: string,
   ) {
-    return
+    return this.booksInfoService.getBooksByGenre({ take, genre })
   }
 }

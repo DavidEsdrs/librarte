@@ -1,13 +1,12 @@
 import { Category } from "@/components/Category";
-import { PostCard } from "@/components/PostCard";
-import { Binoculars, MagnifyingGlass } from "phosphor-react";
-import book from '@/assets/book.svg'
+import { Binoculars } from "phosphor-react";
 import { Sidebar } from "@/components/Sidebar";
 import Head from "next/head";
 import { BookCard } from "@/components/BookCard";
 import { useState } from "react";
+import { SearchBar } from "@/components/SearchBar";
 
-const categories = ["Todos", "Computação", "Educação", "Fantasia", 'Ficção científica', 'Horror']
+const categories = ["Todos", "Computação", "Educação", "Fantasia", 'Ficção científica', 'Horror', "Ação", "Romance", "Aventura", "Drama", "Liturgia", "Liturgia" , "Liturgia", "Liturgia" , "Liturgia", "Liturgia", "Liturgia"]
 
 export default function Explore() {
   const [activeCategory, setActiveCategory] = useState('Todos')
@@ -24,23 +23,19 @@ export default function Explore() {
 
       <Sidebar />
       <main className="flex-1 flex justify-center overflow-auto p-16">
-        <div className="flex w-full max-w-[1420px] flex-col">
+        <div className="flex w-full max-w-[1420px] flex-col ">
           <header className="flex items-center justify-between">
             <h1 className="flex items-center text-gray-100 text-2xl font-bold gap-4">
               <Binoculars size={32} className="text-green-100"/>
               Explorar
             </h1>
 
-            <form className="flex items-center gap-6 border border-gray-500 px-6 py-3 rounded w-[433px]">
-              <input className="bg-transparent flex-1 outline-none" type="text" placeholder="Buscar livro ou autor" />
-
-              <button type="submit" >
-                <MagnifyingGlass size={20}/>
-              </button>
-            </form>
+            <div className="w-[488px]">
+              <SearchBar />
+            </div>
           </header>
 
-          <div className="flex flex-start my-12 gap-4">
+          <div className="flex flex-start my-12 gap-4 overflow-auto pb-3">
             {categories.map(category => (
               <Category 
                 key={category} 

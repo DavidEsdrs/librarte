@@ -1,8 +1,6 @@
 import { UserDTO } from "@/dtos/UserDTO";
 import { api } from "@/services/api";
-import { useRouter } from "next/router";
-import { setCookie, parseCookies } from "nookies";
-import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 
 interface UserLogin {
   email: string,
@@ -22,7 +20,6 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const router = useRouter()
   const [user, setUser] = useState<UserDTO | null>(null) 
 
   const isAuthenticated = !!user
@@ -38,7 +35,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
   
-  async function fetchUser () {
+  async function fetchUser() {
     const { data } = await api.get('users')
     if (data) {
       setUser(data)

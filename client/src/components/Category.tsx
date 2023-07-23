@@ -14,6 +14,9 @@ export function Category({ title, isActive, ...rest }: CategoryProps) {
         rounded-2xl 
         py-1 
         px-4
+        whitespace-nowrap
+        hover:text-white
+        hover:bg-purple-200
         ${isActive && 'text-white bg-purple-200 border-transparent'}
       `}
       {...rest}

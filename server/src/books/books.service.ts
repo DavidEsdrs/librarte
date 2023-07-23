@@ -2,11 +2,15 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateBookDTO } from './dto/books.dto'
 import { Book } from '@prisma/client'
+import { Readable } from 'node:stream'
+import { WritableStream } from 'node:stream/web'
+import fs from 'fs'
+import { FileSystemService } from 'src/file-system/file-system.service'
 
 @Injectable()
 export class BooksService {
   /* eslint-disable */
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private fileSystem: FileSystemService) {}
 
   async createBook(
     dto: CreateBookDTO & { requester_id: number } & {
@@ -68,5 +72,17 @@ export class BooksService {
     })
 
     return book
+  }
+
+  async getBookImage(id: number) {
+    const book = await this.prisma.book.findFirst({
+      where: {
+        id,
+      },
+    })
+
+    const stream = fs.createReadStream(this.fileSystem.getPath(book.coverFilePath, ['books', 'cover']))
+
+    return { stream, book }
   }
 }

@@ -30,4 +30,8 @@ export class FileSystemService {
   pushUploadedFile(filename: string) {
     this.uploadedFilesName.push(filename)
   }
+
+  getPath(filename: string, filepath: string[]) {
+    return path.join('uploads', ...filepath, filename)
+  }
 }

@@ -10,6 +10,7 @@ import { DealsModule } from './deals/deals.module'
 import { CommentsModule } from './comments/comments.module'
 import { ChatsModule } from './chats/chats.module'
 import { UsersModule } from './users/users.module'
+import { GenresModule } from './genres/genres.module'
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UsersModule } from './users/users.module'
     CommentsModule,
     ChatsModule,
     UsersModule,
+    GenresModule,
   ],
 })
 export class AppModule {}

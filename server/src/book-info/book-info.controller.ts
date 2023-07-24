@@ -14,6 +14,7 @@ import { BookInfoService } from './book-info.service'
 import { Public } from 'src/common/decorators/public.decorator'
 import { FilesFieldsInterceptor } from 'src/common/interceptors/files-fields.interceptor'
 import { UnprocessableEntityExceptionFilter } from 'src/common/filters/unprocessable-entity-exception.filter'
+import { BookInfoUrlInterceptor } from './book-info-url.interceptor'
 
 @Controller('book-info')
 export class BookInfoController {
@@ -39,6 +40,7 @@ export class BookInfoController {
 
   @Public()
   @Get("/")
+  @UseInterceptors(BookInfoUrlInterceptor)
   async getBooks(
     @Query('take') take: number, 
     @Query('skip') skip: number,

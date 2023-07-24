@@ -13,30 +13,19 @@ export class BookInfoController {
     return this.booksInfoService.createBookInfo(createBookInfoDto)
   }
 
-  @Get('/:id')
+  @Get('/:id/single')
   async getBookInfoById(@Param('id') id: number) {
     return this.booksInfoService.getBookInfoById(id)
   }
 
-  @Get('/')
-  async getBookByIsbn(@Query('isbn') isbn: string) {
-    return this.booksInfoService.getBookInfoByIsbn(isbn)
-  }
-
   @Public()
-  @Get()
+  @Get("/")
   async getBooks(
     @Query('take') take: number, 
     @Query('skip') skip: number,
-  ) {
-    return this.booksInfoService.getBooks({ take, skip })
-  }
-
-  @Get('/')
-  async getBooksByGenre(
-    @Query('take') take: number,
     @Query('genre') genre: string,
+    @Query('isbn') isbn: string
   ) {
-    return this.booksInfoService.getBooksByGenre({ take, genre })
+    return this.booksInfoService.getBooks({ take: take || 10, skip: skip || 0, isbn, genre })
   }
 }

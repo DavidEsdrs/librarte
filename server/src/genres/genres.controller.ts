@@ -10,6 +10,6 @@ export class GenresController {
   async getGenres(
     @Query('take') take: number
   ) {
-    return this.service.getGenres({ take })
+    return this.service.getGenres({ take: take || 10 })
   }
 }

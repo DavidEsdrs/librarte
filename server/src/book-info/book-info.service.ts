@@ -40,41 +40,25 @@ export class BookInfoService {
     return bookInfo
   }
 
-  async getBookInfoByIsbn(isbn: string) {
-    const bookInfo = await this.prisma.bookInfo.findFirst({
+  async getBooks({ take, skip, isbn, genre }: { take?: number, skip?: number, isbn?: string, genre?: string }) {
+    const books = await this.prisma.bookInfo.findMany({
       where: {
         isbn,
-      },
-    })
-    if (!bookInfo) {
-      throw new NotFoundException('There is no book with the given isbn!')
-    }
-    return bookInfo
-  }
-
-  async getBooks({ take, skip }: { take?: number, skip?: number }) {
-    const books = await this.prisma.bookInfo.findMany({
-      include: {
-        genres: true
-      },
-      take,
-      skip
-    })
-    return books
-  }
-
-  async getBooksByGenre({ genre, take, skip }: { take?: number, genre: string, skip?: number }) {
-    const books = await this.prisma.bookInfo.findMany({
-      where: {
         genres: {
           some: {
             name: genre
           }
         }
       },
+      include: {
+        genres: true
+      },
       take,
       skip
     })
+    if(books.length == 1) {
+      return books[0]
+    }
     return books
   }
 }

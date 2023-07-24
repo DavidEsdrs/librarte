@@ -61,7 +61,7 @@ export class BookInfoService {
     const books = await this.prisma.bookInfo.findMany({
       where: {
         isbn,
-        genres: {
+        genres: genre && {
           some: {
             name: genre
           }

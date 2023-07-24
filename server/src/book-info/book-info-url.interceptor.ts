@@ -4,8 +4,10 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common'
-import { Book } from '@prisma/client'
+import { BookInfo } from '@prisma/client'
 import { map } from 'rxjs'
+
+type BookInfoWithCoverImage = BookInfo & { cover: { imageFilePath: string } }
 
 @Injectable()
 export class BookInfoUrlInterceptor implements NestInterceptor {
@@ -16,14 +18,25 @@ export class BookInfoUrlInterceptor implements NestInterceptor {
     const domain = `${protocol}://${host}`
 
     return next.handle().pipe(
-      map((books: Book[]) =>
-        books.map((book) => ({
-          ...book,
-          coverImageUrl:
-            book.coverFilePath && `${domain}/book-info/${book.id}/image`,
-          coverFilePath: undefined,
-        })),
-      ),
+      map((books: BookInfoWithCoverImage[] | BookInfoWithCoverImage) => {
+        if (Array.isArray(books)) {
+          return books.map((book) => ({
+            ...book,
+            coverImageUrl:
+              book.cover?.imageFilePath &&
+              `${domain}/book-info/${book.id}/image`,
+            coverFilePath: undefined,
+          }))
+        } else {
+          return {
+            ...books,
+            cover:
+              books.cover?.imageFilePath &&
+              `${domain}/book-info/${books.id}/image`,
+            coverFilePath: undefined,
+          }
+        }
+      }),
     )
   }
 }

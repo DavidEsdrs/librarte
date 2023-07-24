@@ -1,12 +1,11 @@
 import {
   CallHandler,
   ExecutionContext,
-  HttpServer,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common'
 import { Book } from '@prisma/client'
-import { map, tap } from 'rxjs'
+import { map } from 'rxjs'
 
 @Injectable()
 export class BookInfoUrlInterceptor implements NestInterceptor {

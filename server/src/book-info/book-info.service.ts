@@ -75,4 +75,23 @@ export class BookInfoService {
     })
     return books
   }
+
+  async getBookImage(id: number) {
+    const book = await this.prisma.bookInfo.findUnique({
+      where: { id },
+      include: {
+        cover: true
+      }
+    })
+
+    if(!book) {
+      throw new NotFoundException('There is no book with the given id!')
+    }
+
+    const path = this.fileSystem.getPath(book.cover.imageFilePath, ['book-info', 'cover'])
+    const size = fs.statSync(path).size
+    const stream = fs.createReadStream(path)
+
+    return { book, stream, size }
+  }
 }

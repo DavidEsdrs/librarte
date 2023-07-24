@@ -5,6 +5,8 @@ import {
   Param,
   Post,
   Query,
+  Response,
+  StreamableFile,
   UploadedFiles,
   UseFilters,
   UseInterceptors,
@@ -39,6 +41,22 @@ export class BookInfoController {
   @Get('/:id')
   async getBookInfoById(@Param('id') id: number) {
     return this.booksInfoService.getBookInfoById(id)
+  }
+
+  @Public()
+  @Get('/:id/image')
+  async getBookImage(
+    @Param('id') id: number,
+    @Response() response
+  ) {
+    const { book, stream, size } = await this.booksInfoService.getBookImage(id)
+    const fileType = book.cover.imageFilePath.split('.').pop()
+    response.set({
+      'Content-Type': `image/${fileType}`,
+      'Content-Disposition': `inline; filename=image.${fileType}}`,
+      'Content-Length': size
+    })
+    return new StreamableFile(stream)
   }
 
   @Public()

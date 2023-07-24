@@ -8,8 +8,6 @@ import {
 @Injectable()
 export class CreateBookPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
-    console.log({ value })
-
     if (Object.getPrototypeOf(value) === null) {
       if (!value.cover || value.cover.length <= 0) {
         throw new UnprocessableEntityException(

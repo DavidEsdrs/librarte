@@ -51,14 +51,12 @@ export class BookInfoService {
         }
       },
       include: {
-        genres: true
+        genres: true,
+        authors: true
       },
       take,
       skip
     })
-    if(books.length == 1) {
-      return books[0]
-    }
     return books
   }
 }

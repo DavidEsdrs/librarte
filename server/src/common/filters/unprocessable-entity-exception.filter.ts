@@ -33,6 +33,12 @@ export class UnprocessableEntityExceptionFilter implements ExceptionFilter {
           filesNames = filteredArray
           this.fileSystem.setUploadedFilesName(filteredArray)
           break
+        case 'bookinfocover':
+          await this.fileSystem.deleteFile(fileName, ['book-info', 'cover'])
+          const filteredArrayBi = filesNames.filter((fn) => fn !== fileName)
+          filesNames = filteredArrayBi
+          this.fileSystem.setUploadedFilesName(filteredArrayBi)
+          break
         case 'featured_images':
           await this.fileSystem.deleteFile(fileName, [
             'books',

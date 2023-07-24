@@ -1,11 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateBookInfoDTO } from './dto/book-info.dto'
+import fs from 'fs'
+import { FileSystemService } from 'src/file-system/file-system.service'
 
 @Injectable()
 export class BookInfoService {
   /* eslint-disable */
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService, 
+    @Inject('FILE_SYSTEM')
+    private fileSystem: FileSystemService
+    ) {}
 
   async createBookInfo({
     isbn,
@@ -15,6 +21,7 @@ export class BookInfoService {
     totalPages,
     title,
     imageFilePath,
+    author
   }: CreateBookInfoDTO & { imageFilePath: string }) {
     const bookInfo = await this.prisma.bookInfo.create({
       data: {
@@ -28,6 +35,9 @@ export class BookInfoService {
           create: {
             imageFilePath
           }
+        },
+        authors: {
+          create: [{ name: author }]
         }
       },
     })

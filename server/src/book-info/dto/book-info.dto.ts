@@ -27,4 +27,7 @@ export class CreateBookInfoDTO {
 
   @IsString()
   summary: string
+
+  @IsString()
+  author: string
 }

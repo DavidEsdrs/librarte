@@ -14,7 +14,8 @@ export class BookInfoService {
     summary,
     totalPages,
     title,
-  }: CreateBookInfoDTO) {
+    imageFilePath,
+  }: CreateBookInfoDTO & { imageFilePath: string }) {
     const bookInfo = await this.prisma.bookInfo.create({
       data: {
         isbn,
@@ -23,6 +24,11 @@ export class BookInfoService {
         summary,
         totalPages,
         title,
+        cover: {
+          create: {
+            imageFilePath
+          }
+        }
       },
     })
     return bookInfo

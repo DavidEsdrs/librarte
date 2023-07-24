@@ -1,16 +1,35 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UploadedFiles,
+  UseFilters,
+  UseInterceptors,
+} from '@nestjs/common'
 import { CreateBookInfoDTO } from './dto/book-info.dto'
 import { BookInfoService } from './book-info.service'
 import { Public } from 'src/common/decorators/public.decorator'
+import { FilesFieldsInterceptor } from 'src/common/interceptors/files-fields.interceptor'
+import { UnprocessableEntityExceptionFilter } from 'src/common/filters/unprocessable-entity-exception.filter'
 
 @Controller('book-info')
 export class BookInfoController {
   /* eslint-disable */
   constructor(private booksInfoService: BookInfoService) {}
 
+  @UseInterceptors(FilesFieldsInterceptor)
+  @UseFilters(UnprocessableEntityExceptionFilter)
   @Post('/')
-  async createBookInfo(@Body() createBookInfoDto: CreateBookInfoDTO) {
-    return this.booksInfoService.createBookInfo(createBookInfoDto)
+  async createBookInfo(
+    @Body() createBookInfoDto: CreateBookInfoDTO,  
+    @UploadedFiles()
+    files: {
+      cover: Express.Multer.File[]
+  }) {
+    return this.booksInfoService.createBookInfo({...createBookInfoDto, imageFilePath: files.cover[0].filename})
   }
 
   @Get('/:id/single')

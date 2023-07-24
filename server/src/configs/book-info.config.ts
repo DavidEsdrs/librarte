@@ -12,7 +12,7 @@ export const bookInfoConfigProvider: Provider = {
       editFileName(req, file, callback) {
         const fileExtName = extname(file.originalname)
         const name = Date.now()
-        const fileName = `cover-${name}${fileExtName}`
+        const fileName = `bookinfocover-${name}${fileExtName}`
         callback(null, fileName)
         return fileName
       },

@@ -8,6 +8,7 @@ import {
   UploadedFiles,
   UseFilters,
   UseInterceptors,
+  UsePipes,
 } from '@nestjs/common'
 import { CreateBookInfoDTO } from './dto/book-info.dto'
 import { BookInfoService } from './book-info.service'
@@ -15,6 +16,7 @@ import { Public } from 'src/common/decorators/public.decorator'
 import { FilesFieldsInterceptor } from 'src/common/interceptors/files-fields.interceptor'
 import { UnprocessableEntityExceptionFilter } from 'src/common/filters/unprocessable-entity-exception.filter'
 import { BookInfoUrlInterceptor } from './book-info-url.interceptor'
+import { BookInfoPipe } from './pipes/book-info.pipe'
 
 @Controller('book-info')
 export class BookInfoController {
@@ -23,6 +25,7 @@ export class BookInfoController {
 
   @UseInterceptors(FilesFieldsInterceptor)
   @UseFilters(UnprocessableEntityExceptionFilter)
+  @UsePipes(BookInfoPipe)
   @Post('/')
   async createBookInfo(
     @Body() createBookInfoDto: CreateBookInfoDTO,  
@@ -33,7 +36,7 @@ export class BookInfoController {
     return this.booksInfoService.createBookInfo({...createBookInfoDto, imageFilePath: files.cover[0].filename})
   }
 
-  @Get('/:id/single')
+  @Get('/:id')
   async getBookInfoById(@Param('id') id: number) {
     return this.booksInfoService.getBookInfoById(id)
   }

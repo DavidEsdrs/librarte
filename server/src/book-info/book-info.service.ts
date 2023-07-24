@@ -74,7 +74,7 @@ export class BookInfoService {
       take,
       skip
     })
-    return { totalElements: total, totalPages: Math.ceil(total / take), currentPage: take * skip, books  }
+    return { totalElements: total, totalPages: Math.ceil(total / take), currentPage: take / skip, books  }
   }
 
   async getBookImage(id: number) {

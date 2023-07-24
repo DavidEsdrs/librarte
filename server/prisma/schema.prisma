@@ -108,7 +108,18 @@ model BookInfo {
   authors Author[]
   genres Genre[]
 
+  cover BookInfoImage?
+
   @@map("books_info")
+}
+
+model BookInfoImage {
+  id Int @id @default(autoincrement())
+  imageFilePath String @db.VarChar(50)
+  createdAt DateTime @default(now())
+  bookId Int @unique()
+  book BookInfo @relation(fields: [bookId], references: [id])
+  @@map("books_info_images")
 }
 
 model Publisher {

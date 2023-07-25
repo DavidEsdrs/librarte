@@ -17,7 +17,6 @@ import { BooksService } from './books.service'
 import { FilesFieldsInterceptor } from 'src/common/interceptors/files-fields.interceptor'
 import { UnprocessableEntityExceptionFilter } from 'src/common/filters/unprocessable-entity-exception.filter'
 import { CreateBookPipe } from './pipes/createBook.pipe'
-import { Readable } from 'node:stream'
 import { Public } from 'src/common/decorators/public.decorator'
 
 @Controller('books')

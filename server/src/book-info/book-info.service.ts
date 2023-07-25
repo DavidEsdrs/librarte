@@ -56,8 +56,19 @@ export class BookInfoService {
     return bookInfo
   }
 
-  async getBooks({ take, skip, isbn, genre }: { take?: number, skip?: number, isbn?: string, genre?: string }) {
+  async getBooks({ take, skip, isbn, genre, page }: { take?: number, skip?: number, isbn?: string, genre?: string, page: number }) {
+
     const total = await this.prisma.bookInfo.count()
+    const totalPages = Math.ceil(total / take)
+
+    if(page) {
+      const quant = take * page
+
+      if(quant > total) {
+        skip = take
+      }
+    }
+
     const books = await this.prisma.bookInfo.findMany({
       where: {
         isbn,
@@ -74,7 +85,20 @@ export class BookInfoService {
       take,
       skip
     })
-    return { totalElements: total, totalPages: Math.ceil(total / take), currentPage: skip / take, books  }
+
+    let currrentPage = page
+
+    if(currrentPage > totalPages) {
+      currrentPage = totalPages
+    }
+
+    return { 
+      totalElements: total, 
+      totalPages, 
+      currentPage: currrentPage ?? Math.floor(skip / take + 1), 
+      currentPageLength: books.length,
+      books  
+    }
   }
 
   async getBookImage(id: number) {

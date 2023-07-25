@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   Response,
@@ -65,9 +66,10 @@ export class BookInfoController {
   async getBooks(
     @Query('take') take: number, 
     @Query('skip') skip: number,
+    @Query('page') page: number,
     @Query('genre') genre: string,
     @Query('isbn') isbn: string
   ) {
-    return this.booksInfoService.getBooks({ take: take || 10, skip: skip || 0, isbn, genre })
+    return this.booksInfoService.getBooks({ take: take || 10, skip: skip || 0, isbn, genre, page: page || undefined })
   }
 }

@@ -32,8 +32,11 @@ services:
     tty: true
     networks:
       - backend
+    volumes:
+      - file_uploads_volume:/app/uploads
 volumes: 
   db:
+  file_uploads_volume:
 networks:
   backend:
     driver: bridge

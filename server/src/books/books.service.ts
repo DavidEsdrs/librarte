@@ -2,8 +2,6 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { CreateBookDTO } from './dto/books.dto'
 import { Book } from '@prisma/client'
-import { Readable } from 'node:stream'
-import { WritableStream } from 'node:stream/web'
 import fs from 'fs'
 import { FileSystemService } from 'src/file-system/file-system.service'
 

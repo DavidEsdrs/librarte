@@ -1,12 +1,5 @@
 import { Type } from 'class-transformer'
-import {
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-  Min,
-} from 'class-validator'
+import { IsInt, IsOptional, IsString, Length, Min } from 'class-validator'
 
 export class CreateBookDTO {
   @IsString()

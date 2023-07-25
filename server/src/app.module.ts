@@ -11,6 +11,7 @@ import { CommentsModule } from './comments/comments.module'
 import { ChatsModule } from './chats/chats.module'
 import { UsersModule } from './users/users.module'
 import { GenresModule } from './genres/genres.module'
+import { AppController } from './app.controller'
 
 @Module({
   imports: [
@@ -27,5 +28,6 @@ import { GenresModule } from './genres/genres.module'
     UsersModule,
     GenresModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

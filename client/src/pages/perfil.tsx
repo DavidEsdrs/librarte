@@ -3,6 +3,7 @@ import { BookOpen, BookmarkSimple, Books, MagnifyingGlass, User, UserList } from
 import book from '@/assets/book.svg'
 import { Sidebar } from "@/components/Sidebar";
 import Head from "next/head";
+import { SearchBar } from "@/components/SearchBar";
 
 export default function Perfil() {
   return (
@@ -21,32 +22,34 @@ export default function Perfil() {
 
           <div className="flex mt-12 gap-16">
             <section className="flex-1 flex flex-col items-center xl:items-start ">
-              <form className="flex items-center gap-6 border border-gray-500 px-6 py-3 rounded w-full">
-                <input className="bg-transparent flex-1 outline-none" type="text" placeholder="Buscar livro ou autor" />
-
-                <button type="submit" >
-                  <MagnifyingGlass size={20}/>
-                </button>
-              </form>
+              <SearchBar/>
 
               <div className="space-y-8 mt-16 w-full">
-                <PostCard.Root>
-                  <PostCard.Content 
-                    image={book}
-                    title="Entendendo Algoritmos"
-                    author="Aditya Bhargava"
-                    description="Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
-                  />
-                </PostCard.Root>
+                <PostCard 
+                  creator={{
+                    name: "Matheus Oliveira",
+                    createdAt: "Hoje",
+                  }}
+                  bookDescription={{
+                    image: book,
+                    title:"Entendendo Algoritmos",
+                    author:"Aditya Bhargava",
+                    description: "Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
+                  }}
+                />
 
-                <PostCard.Root>
-                  <PostCard.Content 
-                    image={book}
-                    title="Entendendo Algoritmos"
-                    author="Aditya Bhargava"
-                    description="Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
-                  />
-                </PostCard.Root>
+                <PostCard 
+                  creator={{
+                    name: "Matheus Oliveira",
+                    createdAt: "Hoje",
+                  }}
+                  bookDescription={{
+                    image: book,
+                    title:"Entendendo Algoritmos",
+                    author:"Aditya Bhargava",
+                    description: "Nec tempor nunc in egestas. Euismod nisi eleifend at et in sagittis. Penatibus id vestibulum imperdiet a at imperdiet lectu..."
+                  }}
+                />
               </div>
             </section>
 

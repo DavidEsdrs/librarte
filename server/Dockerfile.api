@@ -16,5 +16,4 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/uploads ./uploads
 
-EXPOSE 3000
 CMD ["yarn", "migrate:start:prod"]

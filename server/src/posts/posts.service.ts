@@ -53,7 +53,8 @@ export class PostsService {
         }
       },
       include: {
-        book: true
+        book: true,
+        user: true
       },
       take,
       skip

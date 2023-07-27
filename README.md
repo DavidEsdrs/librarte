@@ -15,3 +15,23 @@ Backend:
 - Nestjs
 - Prisma
 - MySQL
+
+## Getting started
+
+To launch the application easier, make sure to have Docker Desktop installed on your machine, it will avoid versioning conflicts. Otherwise, go to the next section (without docker).
+
+### With docker
+
+1° - Launch a terminal inside a empty folder
+
+2° - Clone the repository:
+```sh
+git clone https://github.com/DavidEsdrs/librarte.git .
+
+```
+3° - Compose the app:
+```sh
+docker compose up
+```
+After some tries there will be 4 containers running, nginx, app, client and db.
+Go to localhost:80 and enjoy 😄

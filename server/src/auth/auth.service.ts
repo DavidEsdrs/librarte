@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import {
+  Injectable,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from '@nestjs/common'
 import { PrismaService } from 'src/prisma/prisma.service'
 import { hash, verify } from 'argon2'
 import { JwtService } from '@nestjs/jwt'
@@ -41,19 +45,23 @@ export class AuthService {
       throw new UnauthorizedException()
     }
     const hashPassword = await hash(args.password)
-    const user = await this.prisma.user.create({
-      data: {
-        username: args.username,
-        email: args.email,
-        hashPassword,
-        profile: {
-          create: {
-            name: args.name,
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          username: args.username,
+          email: args.email,
+          hashPassword,
+          profile: {
+            create: {
+              name: args.name,
+            },
           },
         },
-      },
-    })
-    return user
+      })
+      return user
+    } catch(err) {
+      throw new UnprocessableEntityException()
+    }
   }
 
   async verifyUserByToken(token: string): Promise<User | undefined> {
